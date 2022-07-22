@@ -1,0 +1,287 @@
+/* General Styling */
+
+html{
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: var(--main-background-color);
+    color: var(--main-font);
+}
+
+header{
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: var(--div-background-color);
+    padding: 20px;
+    color: var(--div-font);
+}
+
+.index-page-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+div{
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: var(--div-background-color);
+    padding: 20px;
+    color: var(--div-font);
+}
+
+.selection-section{
+    display: flex;
+    justify-content: center;
+}
+
+.selection-section form{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.note-section {
+    margin-bottom: 10px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.note-section-left{
+    width: 150px;
+}
+
+.note-section-middle{
+    min-width: 800px;
+}
+
+.note-text-index{
+    min-width: 800px;
+    height: 100px;
+}
+
+label {
+    display: inline-block;
+    width: 150px;
+    text-align: left;
+}
+
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=number], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: var(--button-background-color);
+    color: var(--button-font);
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: var(--button-hover-background);
+}
+
+/* Style Switcher */
+
+.toggle-switch {
+    display: flex;
+}
+
+.dark {
+    --main-background-color: #2B2B2B;
+    --main-font: white;
+    --div-font: white;
+    --div-background-color: #101820FF;
+    --button-background-color: #F2AA4CFF;
+    --button-hover-background: #DAA03DFF;
+    --button-font: black;
+}
+
+.light {
+    --main-background: white;
+    --main-font: black;
+    --div-font: #2B2B2B;
+    --div-background-color: #e7e7e7;
+    --button-background-color: #4CAF50;
+    --button-hover-background: #45a049;
+    --button-font: white;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.switch input {
+    opacity: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: hsl(230, 22%, 74%);;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 32px;
+    bottom: 5px;
+    background-color: #fff;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background: linear-gradient(90grad, hsl(210, 78%, 56%), hsl(146, 68%, 55%));
+}
+
+input:checked + .slider:before {
+    transform: translateX(-24px);
+}
+
+.slider,
+.round {
+    border-radius: 34px;
+}
+
+.round::before {
+    border-radius: 50%;
+}
+
+input:checked + .round::before {
+    background-color: hsl(230, 17%, 14%);
+}
+
+
+/* Prio as Stars */
+
+p.sterne {
+    float: Left;
+}
+p.sterne:not(:checked) > input {
+    display: None;
+}
+p.sterne:not(:checked) > label {
+    float: Right;
+    width: 1em;
+    padding: 0 .1em;
+    overflow: Hidden;
+    white-space: Nowrap;
+    cursor: Pointer;
+    font-size: 200%;
+    line-height: 1.2;
+    color: #D0D0D0;
+    text-shadow: 1px 1px #B0B0B0, 2px 2px #606060, .1em .1em .2em rgba(0,0,0,.5);
+    transition: all .5s;
+}
+p.sterne:not(:checked) > label::before {
+    content: '★ ';
+}
+p.sterne > input:checked ~ label {
+    color: #FFD700;
+    text-shadow: 1px 1px #C06000, 2px 2px #904000, .1em .1em .2em rgba(0,0,0,.5);
+}
+
+/* Responsiveness */
+
+@media(max-width:1350px){
+
+
+    .note-text-index{
+        min-width: 400px;
+    }
+
+    .note-section-middle input{
+        width: 400px;
+    }
+
+    .note-section-middle{
+        max-width: 100%;
+        min-width: 400px;
+    }
+
+}
+
+@media(max-width:950px){
+
+    .index-page-header{
+        display: block;
+        vertical-align: middle;
+    }
+
+    .index-page-header h1{
+        font-size: 18px;
+    }
+
+    .note-section{
+        display: block;
+        vertical-align: middle;
+        padding: 0;
+    }
+
+    .selection-section{
+        display: block;
+        vertical-align: middle;
+    }
+
+    .note-section-left{
+        display: block;
+        vertical-align: middle;
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .toggle-switch, .index-page-header h1{
+        display: flex;
+        justify-content: center;
+    }
+
+}
+
+@media(max-width:600px){
+    .note-section-middle{
+        padding: 0;
+        max-width: 100%;
+        min-width: 300px;
+    }
+
+    .note-text-index{
+        min-width: 300px;
+    }
+
+    .note-section-middle input{
+        width: 300px;
+    }
+}

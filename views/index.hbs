@@ -1,0 +1,289 @@
+<div class="index-page-header">
+    <div>
+    <h1>
+        TODO APP by Marc & Patrick
+    </h1>
+    </div>
+
+    <div class="toggle-switch">
+        <p>Dark</p>
+        <span>
+        <label class ="switch">
+            <input id="theme-switch" type="checkbox">
+            <span class="slider round"></span>
+        </label>
+    </span>
+        <p>Light</p>
+    </div>
+</div>
+
+<div class="selection-section">
+    <form action='/notes' method='get'><input type = 'submit' value = 'Create new Note'></form>
+
+    <form action="javascript:clickHandlerSortedByFinishDate()"><input type = 'submit' value = 'By finish Date' id='sortedByFinishDate'></form>
+    <form action='/sortedByFinishDate' method='post' style="display: none"><input type = 'submit' value = 'By finish Date' id='sortedByFinishDateForm' hidden="hidden"></form>
+    <form action='/sortedByFinishDate/showFinished' method='post' style="display: none"><input type = 'submit' value = 'By finish Date' id='sortedByFinishDateShowFinishedForm' hidden="hidden"></form>
+
+    <form action="javascript:clickHandlerSortedByCreatedDate()"><input type = 'submit' value = 'By created Date' id='sortedByCreatedDate'></form>
+    <form action='/sortedByCreatedDate' method='post' style="display: none"><input type = 'submit' value = 'By created Date' id='sortedByCreatedDateForm' hidden="hidden"></form>
+    <form action='/sortedByCreatedDate/showFinished' method='post' style="display: none"><input type = 'submit' value = 'By created Date' id='sortedByCreatedDateShowFinishedForm' hidden="hidden"></form>
+
+    <form action="javascript:clickHandlerSortedByImportance()"><input type = 'submit' value = 'By Importance' id='sortedByImportance'></form>
+    <form action='/sortedByImportance' method='post' style="display: none"><input type = 'submit' value = 'By Importance' id='sortedByImportanceForm' hidden="hidden"></form>
+    <form action='/sortedByImportance/showFinished' method='post' style="display: none"><input type = 'submit' value = 'By Importance' id='sortedByImportanceShowFinishedForm' hidden="hidden"></form>
+
+    <form action="javascript:clickHandlerShowFinished()"><input type = 'submit' value = 'Show finished' id='showFinished'></form>
+    <form action='/' method='get' style="display: none"><input type = 'submit' value = 'Show all' id="showAllForm" hidden="hidden"></form>
+    <form action='/showFinished' method='post' style="display: none"><input type = 'submit' value = 'Show finished' id="showFinishedForm" hidden="hidden"></form>
+</div>
+
+{{#each data}}
+            <div class="note-section">
+                <div class="note-section-left">
+                    <p id="UntilDate">{{toDoUntilDate}}</p>
+                    {{#if finishedState}}
+                        <form action='/update/{{_id}}/' method='post' >
+                            <input type='checkbox' name='finished' id='{{_id}}' checked>
+                            <input id='triggerCheckbox{{_id}}'  type='submit' value='Save note' hidden="hidden" >
+                        </form>
+                    {{else}}
+                        <form action='/update/{{_id}}/' method='post' >
+                            <input type='checkbox' name='finished' id='{{_id}}'>
+                            <input id='triggerCheckbox{{_id}}'type='submit' value='Save note' hidden="hidden" >
+                        </form>
+                    {{/if}}
+                </div>
+                <div class="note-section-middle">
+                    <input class="note-title-index" type='text' name='title' placeholder='Note title' value='{{noteTitle}}' readonly><br>
+                    <textarea class="note-text-index" placeholder='Note text' readonly>{{noteText}}</textarea>
+                </div>
+                <div class="note-section-right">
+                    <p class = "sterne">
+                        <input type="radio" id="stern5" name="{{notePrio}}" value="5"><label title="5 Sterne">5 Sterne</label>
+                        <input type="radio" id="stern4" name="{{notePrio}}" value="4"><label title="4 Sterne">4 Sterne</label>
+                        <input type="radio" id="stern3" name="{{notePrio}}" value="3"><label title="3 Sterne">3 Sterne</label>
+                        <input type="radio" id="stern2" name="{{notePrio}}" value="2"><label title="2 Sterne">2 Sterne</label>
+                        <input type="radio" id="stern1" name="{{notePrio}}" value="1"><label title="1 Stern">1 Stern</label>
+                    </p>
+                    <form action='/notes/{{_id}}'  method='get'><input type = 'submit' value = 'Modify Note'></form>
+                </div>
+            </div>
+{{/each}}
+
+<script>
+
+    /* Displaying of Priority Handling */
+    window.onLoad = initPrioStars();
+
+    function initPrioStars(){
+        document.querySelectorAll('input[type="radio"]').forEach(item => {
+            if(item.name == item.value){
+                item.checked = true;
+            }
+        });
+    }
+
+    /* Displaying of Finish Date Handling */
+
+    document.querySelectorAll('p[id="UntilDate"]').forEach(item => {
+        const DATETIME = new Date(item.textContent);
+        let VariableDatetime = new Date();
+        if (DATETIME.getDate() >= (VariableDatetime.getDate()-2) && DATETIME.getDate() <= (VariableDatetime.getDate()+2)){
+            switch (DATETIME.getDate()){
+                case (VariableDatetime.getDate()):    item.textContent = "Heute";         break;
+                case (VariableDatetime.getDate()+1):  item.textContent = "Morgen";        break;
+                case (VariableDatetime.getDate()+2):  item.textContent = "Übermorgen";    break;
+                case (VariableDatetime.getDate()-1):  item.textContent = "Gestern";       break;
+                case (VariableDatetime.getDate()-2):  item.textContent = "Vorgestern";    break;
+                default: item.textContent = DATETIME.toLocaleDateString();
+            }
+        } else if(DATETIME.getDate().toLocaleString() < (VariableDatetime.getDate()-2).toLocaleString()){
+            item.textContent = "Vergangenheit";
+        } else{
+            item.textContent = "Zukunft";
+        }
+
+    });
+
+    /* Finished Checkbox Handling */
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(item => {
+        item.addEventListener('click', event => {
+            let idOfButton = "triggerCheckbox" + item.getAttribute('id');
+            console.log(idOfButton);
+            document.getElementById(idOfButton).click();
+        })
+    })
+
+    /* Theme Switch Handling */
+
+    const themeSwitcher = document.getElementById("theme-switch");
+
+    function clickHandlerThemeSwitch(){
+        if(this.checked){
+            document.body.classList.remove("light");
+            document.body.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+        } else {
+            document.body.classList.add("light");
+            document.body.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+        }
+        checkShowFinished();
+        checkSortedBy();
+    }
+
+    themeSwitcher.addEventListener("click", clickHandlerThemeSwitch);
+
+    window.onLoad = checkTheme();
+
+    function checkTheme(){
+        const localStorageTheme = localStorage.getItem("theme");
+
+        if(localStorageTheme !== null && localStorageTheme === "dark"){
+            document.body.className = localStorageTheme;
+            const themeSwitch = document.getElementById("theme-switch");
+            themeSwitch.checked = true;
+        }
+    }
+
+    /* Show Finished Handling */
+
+    window.onLoad = checkShowFinished();
+
+    function checkShowFinished(){
+        const localStorageShowFinished = localStorage.getItem("showFinished");
+        const localStorageTheme = localStorage.getItem("theme");
+
+        if(localStorageShowFinished !== null && localStorageShowFinished === "on"){
+            if(localStorageTheme !== null && localStorageTheme === "dark"){
+                document.getElementById("showFinished").style.background = "white";
+            } else{
+                document.getElementById("showFinished").style.background = "black";
+            }
+        }
+    }
+
+    function clickHandlerShowFinished(){
+        const localStorageShowFinished = localStorage.getItem("showFinished");
+        const localStorageSortedBy = localStorage.getItem("sortedBy");
+
+        if(localStorageShowFinished !== null && localStorageShowFinished === "on") {
+            document.getElementById("showAllForm").click();
+            localStorage.setItem("showFinished", "off");
+            if(localStorageSortedBy === "finishDate"){
+                document.getElementById("sortedByFinishDateForm").click();
+            } else if(localStorageSortedBy === "createdDate"){
+                document.getElementById("sortedByCreatedDateForm").click();
+            } else if(localStorageSortedBy === "importance"){
+                document.getElementById("sortedByImportanceForm").click();
+            }
+        } else{
+            document.getElementById("showFinishedForm").click();
+            localStorage.setItem("showFinished", "on");
+            if(localStorageSortedBy === "finishDate"){
+                document.getElementById("sortedByFinishDateShowFinishedForm").click();
+            } else if(localStorageSortedBy === "createdDate"){
+                document.getElementById("sortedByCreatedDateShowFinishedForm").click();
+            } else if(localStorageSortedBy === "importance"){
+                document.getElementById("sortedByImportanceShowFinishedForm").click();
+            }
+        }
+    }
+
+    /* Sorted By Handling */
+
+    window.onLoad = checkSortedBy();
+
+    function checkSortedBy() {
+        const localStorageSortedBy = localStorage.getItem("sortedBy");
+        const localStorageTheme = localStorage.getItem("theme");
+
+        if (localStorageSortedBy !== null) {
+            if (localStorageSortedBy === "finishDate") {
+                if(localStorageTheme !== null && localStorageTheme === "dark"){
+                    document.getElementById("sortedByFinishDate").style.background = "white";
+                } else{
+                    document.getElementById("sortedByFinishDate").style.background = "black";
+                }
+            } else if (localStorageSortedBy === "createdDate") {
+                if(localStorageTheme !== null && localStorageTheme === "dark"){
+                    document.getElementById("sortedByCreatedDate").style.background = "white";
+                } else{
+                    document.getElementById("sortedByCreatedDate").style.background = "black";
+                }
+            } else if (localStorageSortedBy === "importance") {
+                if(localStorageTheme !== null && localStorageTheme === "dark"){
+                    document.getElementById("sortedByImportance").style.background = "white";
+                } else{
+                    document.getElementById("sortedByImportance").style.background = "black";
+                }
+            }
+        }
+    }
+
+    function clickHandlerSortedByFinishDate(){
+        const localStorageSortedBy = localStorage.getItem("sortedBy");
+        const localStorageShowFinished = localStorage.getItem("showFinished");
+
+        if(localStorageSortedBy !== "finishDate"){
+            if(localStorageShowFinished !== null && localStorageShowFinished === "on") {
+                document.getElementById("sortedByFinishDateShowFinishedForm").click();
+            } else{
+                document.getElementById("sortedByFinishDateForm").click();
+            }
+            localStorage.setItem("sortedBy", "finishDate");
+        } else{
+            if (localStorageShowFinished == "on"){
+                document.getElementById("showFinishedForm").click();
+            } else{
+                document.getElementById("showAllForm").click();
+            }
+            localStorage.setItem("sortedBy", "notSorted");
+        }
+    }
+
+    function clickHandlerSortedByCreatedDate(){
+        const localStorageSortedBy = localStorage.getItem("sortedBy");
+        const localStorageShowFinished = localStorage.getItem("showFinished");
+
+        if(localStorageSortedBy !== "createdDate"){
+            if(localStorageShowFinished !== null && localStorageShowFinished === "on") {
+                document.getElementById("sortedByCreatedDateShowFinishedForm").click();
+            } else{
+                document.getElementById("sortedByCreatedDateForm").click();
+            }
+            localStorage.setItem("sortedBy", "createdDate");
+        } else{
+            if (localStorageShowFinished == "on"){
+                document.getElementById("showFinishedForm").click();
+            } else{
+                document.getElementById("showAllForm").click();
+            }
+            localStorage.setItem("sortedBy", "notSorted");
+        }
+    }
+
+    function clickHandlerSortedByImportance(){
+        const localStorageSortedBy = localStorage.getItem("sortedBy");
+        const localStorageShowFinished = localStorage.getItem("showFinished");
+
+        if(localStorageSortedBy !== "importance"){
+            if(localStorageShowFinished !== null && localStorageShowFinished === "on") {
+                document.getElementById("sortedByImportanceShowFinishedForm").click();
+            } else{
+                document.getElementById("sortedByImportanceForm").click();
+            }
+            localStorage.setItem("sortedBy", "importance");
+        } else{
+            if (localStorageShowFinished == "on"){
+                document.getElementById("showFinishedForm").click();
+            } else{
+                document.getElementById("showAllForm").click();
+            }
+            localStorage.setItem("sortedBy", "notSorted");
+        }
+    }
+
+</script>
+

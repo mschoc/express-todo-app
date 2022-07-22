@@ -1,0 +1,56 @@
+<div>
+    {{#if new}}
+        <h2>Create new Note</h2>
+        <form action='/notes' method='post' >
+            <label>Name:</label>
+            <input type='text' name='name' placeholder='Firstname' value='{{noteBy}}'><br>
+            <label>Note title:</label>
+            <input type='text' name='title' placeholder='Note title' value='{{noteTitle}}'><br>
+            <label>Note text:</label>
+            <input type='text' name='text' placeholder='Note text' value='{{noteText}}'><br>
+            <label>Note priority:</label>
+            <input type='number' name='prio' placeholder='1-5' min=1 max=5 required>
+            <label>ToDo Until:</label>
+            <input type="datetime-local" type="time" id="toDoUntilDateTime" name="toDoUntil" value= new DateTime()><br>
+            <label>Finished:</label>
+            <input type='checkbox' name='finished' ><br>
+            <input type='submit' value='Save note'>
+        </form>
+    {{else}}
+        <h2>Modify Note with ID: {{_id}} created on {{noteCreateDate}}</h2>
+        <form action='/notes/{{_id}}/' method='post' >
+            <label>Name:</label>
+            <input type='text' name='name' placeholder='Firstname' value='{{noteBy}}'><br>
+            <label>Note title:</label>
+            <input type='text' name='title' placeholder='Note title' value='{{noteTitle}}'><br>
+            <label>Note text:</label>
+            <input type='text' name='text' placeholder='Note text' value='{{noteText}}'><br>
+            <label>Note priority:</label>
+            <input type='number' name='prio' placeholder='1-5' min=1 max=5 value={{notePrio}} required>
+            <label>ToDo Until:</label>
+            <input type="datetime-local" id="toDoUntilDateTime" name="toDoUntil" value='{{toDoUntilDate}}'>
+            <label>Finished: {{finishedState}}</label>
+            {{#if finishedState}}
+                <input type='checkbox' name='finished' checked>
+            {{else}}
+                <input type='checkbox' name='finished'>
+            {{/if}}
+            <input type='submit' value='Save note'>
+        </form>
+    {{/if}}
+
+    <form action='/' method='get'><input type = 'submit' value = 'Cancel'></form>
+</div>
+<script>
+    window.onLoad = checkTheme();
+
+    function checkTheme(){
+        const localStorageTheme = localStorage.getItem("theme");
+
+        if(localStorageTheme !== null && localStorageTheme === "dark"){
+            document.body.className = localStorageTheme;
+            const themeSwitch = document.getElementById("theme-switch");
+            themeSwitch.checked = true;
+        }
+    }
+</script>
